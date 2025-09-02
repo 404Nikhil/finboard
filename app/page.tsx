@@ -1,23 +1,24 @@
 'use client';
 
+import React, { useState } from 'react';
 import { Header } from '@/components/Header';
 import { Widget } from '@/components/Widget';
 import { useWidgetStore } from '@/store/widgetStore';
+import { Modal } from '@/components/Modal';
+import { AddWidgetForm } from '@/components/AddWidgetForm';
 
 export default function Home() {
   const { widgets, addWidget, removeWidget } = useWidgetStore();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleAddWidget = () => {
-    // We'll replace this with a proper configuration modal later
-    const title = prompt('Enter widget title:', 'New Widget');
-    if (title) {
-      addWidget(title);
-    }
+  const handleAddWidget = (title: string) => {
+    addWidget(title);
+    setIsModalOpen(false); // closes modal after adding
   };
 
   return (
     <div className="min-h-screen">
-      <Header />
+      <Header onAddWidgetClick={() => setIsModalOpen(true)} />
       <main className="p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {widgets.map((widget) => (
@@ -34,7 +35,7 @@ export default function Home() {
           ))}
 
           <div
-            onClick={handleAddWidget}
+            onClick={() => setIsModalOpen(true)}
             className="flex items-center justify-center border-2 border-dashed border-gray-600 rounded-lg p-4 min-h-[200px] cursor-pointer hover:bg-gray-800 transition-colors"
           >
             <div className="text-center">
@@ -47,6 +48,13 @@ export default function Home() {
           </div>
         </div>
       </main>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Add New Widget">
+        <AddWidgetForm 
+          onSubmit={handleAddWidget} 
+          onCancel={() => setIsModalOpen(false)} 
+        />
+      </Modal>
     </div>
   );
 }

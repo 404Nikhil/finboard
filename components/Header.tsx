@@ -1,6 +1,10 @@
 import React from 'react';
 
-export const Header = () => {
+type HeaderProps = {
+  onAddWidgetClick: () => void;
+};
+
+export const Header = ({ onAddWidgetClick }: HeaderProps) => {
   return (
     <header className="p-4 border-b border-gray-700">
       <div className="container mx-auto flex justify-between items-center">
@@ -10,8 +14,11 @@ export const Header = () => {
           </div>
           <h1 className="text-xl font-semibold">FinBoard</h1>
         </div>
-        <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">
-          Add Widget
+        <button
+          onClick={onAddWidgetClick}
+          className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg"
+        >
+          + Add Widget
         </button>
       </div>
     </header>
