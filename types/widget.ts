@@ -1,4 +1,4 @@
-export type WidgetConfig = {
+export type CompanyOverviewWidget = {
   id: string;
   title: string;
   type: 'COMPANY_OVERVIEW';
@@ -8,3 +8,15 @@ export type WidgetConfig = {
   refreshInterval: number;
   selectedFields: string[];
 };
+
+export type ChartWidget = {
+  id: string;
+  title: string;
+  type: 'CHART';
+  params: {
+    symbol: string;
+  };
+  refreshInterval: number;
+};
+
+export type WidgetConfig = CompanyOverviewWidget | ChartWidget;
