@@ -35,6 +35,7 @@ export default function Home() {
                 type={widget.type}
                 params={widget.params}
                 refreshInterval={widget.refreshInterval}
+                selectedFields={widget.selectedFields}
               />
             </Widget>
           ))}

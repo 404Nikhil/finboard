@@ -9,6 +9,8 @@ type WidgetState = {
   removeWidget: (id: string) => void;
 };
 
+
+
 // wrapping the store creation with persist to enable localStorage persistence
 export const useWidgetStore = create<WidgetState>()(
   persist(
@@ -23,6 +25,7 @@ export const useWidgetStore = create<WidgetState>()(
             symbol: 'MSFT',
           },
           refreshInterval: 3600,
+          selectedFields: ['Symbol', 'Name', 'MarketCapitalization', 'EBITDA'], 
         },
       ],
       addWidget: (config) => {
