@@ -23,3 +23,10 @@ export const getObjectKeys = (obj: any, prefix = ''): string[] => {
     }
     return path.split('.').reduce((acc, part) => acc && acc[part], obj);
   };
+
+  export function arrayMove<T>(array: T[], from: number, to: number): T[] {
+    const newArray = array.slice();
+    const [removed] = newArray.splice(from, 1);
+    newArray.splice(to, 1, removed);
+    return newArray;
+  }

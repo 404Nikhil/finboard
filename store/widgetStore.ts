@@ -7,6 +7,7 @@ type WidgetState = {
   widgets: WidgetConfig[];
   addWidget: (config: Omit<WidgetConfig, 'id'>) => void;
   removeWidget: (id: string) => void;
+  setWidgets: (widgets: WidgetConfig[]) => void;
 };
 
 
@@ -38,6 +39,7 @@ export const useWidgetStore = create<WidgetState>()(
           widgets: state.widgets.filter((widget) => widget.id !== id),
         }));
       },
+      setWidgets: (widgets) => set({ widgets }),
     }),
     {
       name: 'finboard-storage',
