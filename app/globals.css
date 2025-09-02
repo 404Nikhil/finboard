@@ -5,9 +5,12 @@
 @tailwind utilities;
 
 body {
-  @apply bg-[#0D1117] text-white;
+  @apply bg-gray-100 text-gray-900; /* Light mode default */
+  @apply dark:bg-[#0D1117] dark:text-white; /* Dark mode override */
+  transition-property: color, background-color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
 }
-
 :root {
   --background: #ffffff;
   --foreground: #171717;

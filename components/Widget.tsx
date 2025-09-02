@@ -10,8 +10,7 @@ type WidgetProps = {
 
 export const Widget = ({ id, title, onRemove, onEdit, children }: WidgetProps) => {
   return (
-    <div className="bg-[#161B22] border border-gray-700 rounded-lg p-4 flex flex-col relative min-h-[200px]">
-      <div className="absolute top-2 right-2 flex space-x-2 z-10">
+    <div className="bg-white dark:bg-[#161B22] border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex flex-col relative min-h-[200px]">      <div className="absolute top-2 right-2 flex space-x-2 z-10">
         <button
           onClick={() => onEdit(id)}
           onPointerDown={(e) => e.stopPropagation()} 

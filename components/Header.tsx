@@ -1,5 +1,4 @@
 import React from 'react';
-
 type HeaderProps = {
   onAddWidgetClick: () => void;
 };
@@ -14,13 +13,15 @@ export const Header = ({ onAddWidgetClick }: HeaderProps) => {
           </div>
           <h1 className="text-xl font-semibold">FinBoard</h1>
         </div>
-        <button
+        <div className="flex items-center space-x-4">
+        <button 
           onClick={onAddWidgetClick}
           className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg"
         >
           + Add Widget
         </button>
       </div>
-    </header>
+    </div>
+  </header>
   );
 };

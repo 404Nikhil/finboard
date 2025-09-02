@@ -17,7 +17,7 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
       onClick={onClose}
     >
       <div
-        className="bg-[#161B22] border border-gray-700 rounded-lg shadow-lg w-full max-w-lg p-6 relative"
+        className="bg-white dark:bg-[#161B22] border border-gray-200 dark:border-gray-700  rounded-lg shadow-lg w-full max-w-lg p-6 relative"
         onClick={(e) => e.stopPropagation()} // prevents closing modal when clicking inside
       >
         <div className="flex justify-between items-center mb-4">
