@@ -15,3 +15,11 @@ export const getObjectKeys = (obj: any, prefix = ''): string[] => {
       return [...res, newKey];
     }, []);
   };
+
+  // given a json object and a path in dot notation, return the value at that path, or undefined if not found
+  export const getNestedValue = (obj: any, path: string): any => {
+    if (typeof path !== 'string') {
+      return undefined;
+    }
+    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+  };
