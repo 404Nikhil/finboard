@@ -8,6 +8,7 @@ import { Modal } from '@/components/Modal';
 import { AddWidgetForm } from '@/components/AddWidgetForm';
 import { WidgetConfig } from '@/types/widget';
 import { WidgetContent } from '@/components/WidgetContent';
+import { ClientOnly } from '@/components/ClientOnly';
 
 export default function Home() {
   const { widgets, addWidget, removeWidget } = useWidgetStore();
@@ -21,6 +22,7 @@ export default function Home() {
     <div className="min-h-screen">
       <Header onAddWidgetClick={() => setIsModalOpen(true)} />
       <main className="p-8">
+        <ClientOnly>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {widgets.map((widget) => (
             <Widget
@@ -50,6 +52,7 @@ export default function Home() {
             </div>
           </div>
         </div>
+        </ClientOnly>
       </main>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Add New Widget">
