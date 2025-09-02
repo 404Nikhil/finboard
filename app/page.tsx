@@ -6,16 +6,17 @@ import { Widget } from '@/components/Widget';
 import { useWidgetStore } from '@/store/widgetStore';
 import { Modal } from '@/components/Modal';
 import { AddWidgetForm } from '@/components/AddWidgetForm';
+import { WidgetConfig } from '@/types/widget';
+import { WidgetContent } from '@/components/WidgetContent';
 
 export default function Home() {
   const { widgets, addWidget, removeWidget } = useWidgetStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleAddWidget = (title: string) => {
-    addWidget(title);
-    setIsModalOpen(false); // closes modal after adding
+  const handleAddWidget = (config: Omit<WidgetConfig, 'id'>) => {
+    addWidget(config);
+    setIsModalOpen(false);
   };
-
   return (
     <div className="min-h-screen">
       <Header onAddWidgetClick={() => setIsModalOpen(true)} />
@@ -28,9 +29,11 @@ export default function Home() {
               title={widget.title}
               onRemove={removeWidget}
             >
-              <div className="text-center p-8 text-gray-400">
-                Content for {widget.title}
-              </div>
+              <WidgetContent
+                type={widget.type}
+                params={widget.params}
+                refreshInterval={widget.refreshInterval}
+              />
             </Widget>
           ))}
 

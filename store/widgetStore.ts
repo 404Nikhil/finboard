@@ -4,17 +4,25 @@ import { WidgetConfig } from '@/types/widget';
 
 type WidgetState = {
   widgets: WidgetConfig[];
-  addWidget: (title: string) => void;
+  addWidget: (config: Omit<WidgetConfig, 'id'>) => void;
   removeWidget: (id: string) => void;
 };
 
+const initialIbmWidget: WidgetConfig = {
+  id: nanoid(),
+  title: 'MSFT Company Overview',
+  type: 'COMPANY_OVERVIEW',
+  params: {
+    symbol: 'MSFT',
+  },
+  refreshInterval: 3600,
+};
+
 export const useWidgetStore = create<WidgetState>((set) => ({
-  widgets: [
-    { id: nanoid(), title: 'Crypto Price' },
-  ],
-  addWidget: (title) => {
+  widgets: [initialIbmWidget],
+  addWidget: (config) => {
     set((state) => ({
-      widgets: [...state.widgets, { id: nanoid(), title }],
+      widgets: [...state.widgets, { id: nanoid(), ...config }],
     }));
   },
   removeWidget: (id) => {
