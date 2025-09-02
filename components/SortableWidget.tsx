@@ -10,11 +10,11 @@ import { useWidgetStore } from '@/store/widgetStore';
 
 type SortableWidgetProps = {
   widget: WidgetConfig;
+  onEdit: (id: string) => void;
+  onRemove: (id: string) => void;
 };
 
-export const SortableWidget = ({ widget }: SortableWidgetProps) => {
-  const { removeWidget } = useWidgetStore();
-
+export const SortableWidget = ({ widget, onEdit, onRemove }: SortableWidgetProps) => {
   const {
     attributes,
     listeners,
@@ -26,7 +26,7 @@ export const SortableWidget = ({ widget }: SortableWidgetProps) => {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    touchAction: 'none', // Recommended for better mobile experience
+    touchAction: 'none',
   };
 
   return (
@@ -34,14 +34,10 @@ export const SortableWidget = ({ widget }: SortableWidgetProps) => {
       <Widget
         id={widget.id}
         title={widget.title}
-        onRemove={removeWidget}
+        onRemove={onRemove} 
+        onEdit={onEdit}    
       >
-        <WidgetContent
-          type={widget.type}
-          params={widget.params}
-          refreshInterval={widget.refreshInterval}
-          selectedFields={widget.selectedFields}
-        />
+        <WidgetContent config={widget} />
       </Widget>
     </div>
   );

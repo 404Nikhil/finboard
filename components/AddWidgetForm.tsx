@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { WidgetConfig } from '@/types/widget';
 import { getObjectKeys } from '@/lib/utils';
 
 type AddWidgetFormProps = {
-  onSubmit: (config: Omit<WidgetConfig, 'id'>) => void;
-  onCancel: () => void;
-};
+    onSubmit: (config: Omit<WidgetConfig, 'id'>) => void;
+    onCancel: () => void;
+    initialData?: WidgetConfig;
+  };
 
 const getApiUrl = (symbol: string): string | null => {
   const apiKey = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY;
@@ -15,28 +16,42 @@ const getApiUrl = (symbol: string): string | null => {
   return `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${apiKey}`;
 };
 
-export const AddWidgetForm = ({ onSubmit, onCancel }: AddWidgetFormProps) => {
+export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetFormProps) => {
+  const isEditMode = !!initialData;
   const [title, setTitle] = useState('');
-  const [symbol, setSymbol] = useState('');
-  
-  // API test feature
+  const [symbol, setSymbol] = useState('');  
   const [isTesting, setIsTesting] = useState(false);
   const [testData, setTestData] = useState<any>(null);
   const [availableFields, setAvailableFields] = useState<string[]>([]);
   const [selectedFields, setSelectedFields] = useState<string[]>([]);
   const [testError, setTestError] = useState('');
 
-  const handleTestApi = async () => {
-    if (!symbol) {
+  useEffect(() => {
+    if (isEditMode && initialData) {
+      setTitle(initialData.title);
+      if (initialData.type === 'COMPANY_OVERVIEW') {
+        setSymbol(initialData.params.symbol);
+        setSelectedFields(initialData.selectedFields);
+        handleTestApi(true, initialData.params.symbol);
+      }
+    }
+  }, [isEditMode, initialData]);
+
+ const handleTestApi = async (isInitialTest = false, testSymbol?: string) => {
+    const currentSymbol = testSymbol || symbol;    
+    if (!currentSymbol) {
       setTestError('Please enter a stock symbol first.');
       return;
     }
     setIsTesting(true);
     setTestError('');
     setTestData(null);
-    setSelectedFields([]);
 
-    const url = getApiUrl(symbol.toUpperCase());
+    if (!isInitialTest) {
+      setSelectedFields([]);
+    }
+
+    const url = getApiUrl(currentSymbol.toUpperCase());
     if (!url) {
       setTestError('API Key is not configured.');
       setIsTesting(false);
@@ -79,6 +94,7 @@ export const AddWidgetForm = ({ onSubmit, onCancel }: AddWidgetFormProps) => {
     }
   };
 
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="space-y-4">
@@ -90,7 +106,7 @@ export const AddWidgetForm = ({ onSubmit, onCancel }: AddWidgetFormProps) => {
           <label htmlFor="symbol" className="block text-sm font-medium text-gray-300 mb-1">Stock Symbol</label>
           <div className="flex space-x-2">
             <input type="text" id="symbol" value={symbol} onChange={(e) => setSymbol(e.target.value)} required className="flex-grow bg-[#0D1117] border border-gray-600 rounded-md px-3 py-2" placeholder="e.g., AAPL" />
-            <button type="button" onClick={handleTestApi} disabled={isTesting} className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 font-semibold disabled:bg-gray-500">
+            <button type="button" onClick={() => handleTestApi()} disabled={isTesting} className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 font-semibold disabled:bg-gray-500">
               {isTesting ? 'Testing...' : 'Test'}
             </button>
           </div>
@@ -125,7 +141,9 @@ export const AddWidgetForm = ({ onSubmit, onCancel }: AddWidgetFormProps) => {
       
       <div className="flex justify-end space-x-4 mt-6">
         <button type="button" onClick={onCancel} className="px-4 py-2 rounded-md text-gray-300 hover:bg-gray-700">Cancel</button>
-        <button type="submit" disabled={selectedFields.length === 0} className="px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 font-semibold disabled:opacity-50">Add Widget</button>
+        <button type="submit" disabled={selectedFields.length === 0} className="px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 font-semibold disabled:opacity-50">
+          {isEditMode ? 'Update Widget' : 'Add Widget'}
+        </button>
       </div>
     </form>
   );

@@ -19,10 +19,15 @@ const getApiUrl = (config: Omit<WidgetConfig, 'id' | 'title' | 'selectedFields'>
   }
 };
 
-// props excluding id and title
-type WidgetContentProps = Omit<WidgetConfig, 'id' | 'title'>;
+type WidgetContentProps = {
+  config: WidgetConfig; 
+};
 
-export const WidgetContent = (config: WidgetContentProps) => {
+export const WidgetContent = ({ config }: WidgetContentProps) => {
+  if (config.type !== 'COMPANY_OVERVIEW') {
+    return <div>Chart or other widget type</div>;
+  }
+  
   const { selectedFields } = config;
   const apiUrl = getApiUrl(config);
 
@@ -39,7 +44,6 @@ export const WidgetContent = (config: WidgetContentProps) => {
     return <div className="text-yellow-500">No data found. Check symbol or API limit.</div>
   }
 
-  // display only selected fields
   return (
     <div className="space-y-2 text-sm">
       {selectedFields.map(field => {

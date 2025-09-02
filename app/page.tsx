@@ -14,15 +14,36 @@ import { arrayMove, SortableContext, rectSortingStrategy } from '@dnd-kit/sortab
 import { SortableWidget } from '@/components/SortableWidget';
 
 export default function Home() {
-  const { widgets, addWidget, removeWidget, setWidgets } = useWidgetStore();
+  const { widgets, addWidget, removeWidget, setWidgets, updateWidget } = useWidgetStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingWidgetId, setEditingWidgetId] = useState<string | null>(null);
+
+  const handleOpenModal = (widgetId?: string) => {
+    setEditingWidgetId(widgetId || null);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setEditingWidgetId(null);
+    setIsModalOpen(false);
+  };
+
+  const handleFormSubmit = (config: Omit<WidgetConfig, 'id'>) => {
+    if (editingWidgetId) {
+      updateWidget(editingWidgetId, config);
+    } else {
+      addWidget(config);
+    }
+    handleCloseModal();
+  };
+
+  const widgetToEdit = editingWidgetId ? widgets.find(w => w.id === editingWidgetId) : undefined;
 
   const handleAddWidget = (config: Omit<WidgetConfig, 'id'>) => {
     addWidget(config);
     setIsModalOpen(false);
   };
 
-  // This function is called when a drag operation ends
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -30,16 +51,14 @@ export default function Home() {
       const oldIndex = widgets.findIndex((w) => w.id === active.id);
       const newIndex = widgets.findIndex((w) => w.id === over.id);
 
-      // Use arrayMove to create the new, reordered array
       const reorderedWidgets = arrayMove(widgets, oldIndex, newIndex);
 
-      // Update the state in our Zustand store
       setWidgets(reorderedWidgets);
     }
   };
   return (
     <div className="min-h-screen">
-      <Header onAddWidgetClick={() => setIsModalOpen(true)} />
+      <Header onAddWidgetClick={() => handleOpenModal()} />
       <main className="p-8">
         <ClientOnly>
           <DndContext
@@ -49,11 +68,16 @@ export default function Home() {
             <SortableContext items={widgets.map(w => w.id)} strategy={rectSortingStrategy}>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {widgets.map((widget) => (
-                  <SortableWidget key={widget.id} widget={widget} />
+                  <SortableWidget
+                    key={widget.id}
+                    widget={widget}
+                    onEdit={handleOpenModal}
+                    onRemove={removeWidget}
+                  />
                 ))}
 
                 <div
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => handleOpenModal()}
                   className="flex items-center justify-center border-2 border-dashed border-gray-600 rounded-lg p-4 min-h-[200px] cursor-pointer hover:bg-gray-800 transition-colors"
                 >
                   <div className="text-center">
@@ -70,10 +94,15 @@ export default function Home() {
         </ClientOnly>
       </main>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Add New Widget">
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        title={editingWidgetId ? "Edit Widget" : "Add New Widget"}
+      >
         <AddWidgetForm
-          onSubmit={handleAddWidget}
-          onCancel={() => setIsModalOpen(false)}
+          onSubmit={handleFormSubmit}
+          onCancel={handleCloseModal}
+          initialData={widgetToEdit}
         />
       </Modal>
     </div>
