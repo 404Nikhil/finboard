@@ -141,9 +141,7 @@ export default function Home() {
         {widgets.length === 0 && (
           <div className="text-center py-20">
             <div className="mb-8">
-              <div className="mx-auto w-24 h-24 bg-gradient-to-br from-green-600 to-blue-600 rounded-full flex items-center justify-center text-white text-4xl font-bold shadow-xl">
-                📊
-              </div>
+
             </div>
             <h2 className="text-3xl font-bold text-white mb-4">Welcome to FinBoard</h2>
             <p className="text-gray-400 mb-8 max-w-md mx-auto">

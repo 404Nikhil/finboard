@@ -1,3 +1,4 @@
+
 import { create } from 'zustand';
 import { nanoid } from 'nanoid';
 import { persist } from 'zustand/middleware';
@@ -11,55 +12,88 @@ type WidgetState = {
   updateWidget: (id: string, newConfig: Partial<WidgetConfig>) => void;
 };
 
-const initialMsftWidget: CompanyOverviewWidget = {
+const initialAppleOverview: CompanyOverviewWidget = {
   id: nanoid(),
-  title: 'MSFT Company Overview',
+  title: 'Apple Inc. (AAPL) Overview',
   type: 'COMPANY_OVERVIEW',
-  params: {
-    symbol: 'MSFT',
-  },
-  refreshInterval: 3600,
-  selectedFields: ['Symbol', 'Name', 'MarketCapitalization', 'EBITDA'],
-};
-
-const initialAaplChart: ChartWidget = {
-  id: nanoid(),
-  title: 'Apple Inc. (AAPL) Stock Chart',
-  type: 'CHART',
   params: {
     symbol: 'AAPL',
   },
-  refreshInterval: 86400,
+  refreshInterval: 300, // 5 minutes
+  selectedFields: ['Symbol', 'Name', 'MarketCapitalization', 'PERatio', 'EBITDA', 'Beta'],
+};
+
+const initialMicrosoftChart: ChartWidget = {
+  id: nanoid(),
+  title: 'Microsoft Corporation Stock Chart',
+  type: 'CHART',
+  params: {
+    symbol: 'MSFT',
+  },
+  refreshInterval: 900, // 15 minutes
 };
 
 const initialCryptoTable: TableWidget = {
   id: nanoid(),
-  title: 'Cryptocurrency Rates',
+  title: 'Cryptocurrency Market Data',
   type: 'TABLE',
   params: {},
-  apiUrl: 'https://api.coinbase.com/v2/exchange-rates?currency=BTC',
-  refreshInterval: 60,
-  selectedFields: ['currency', 'rate'],
+  apiUrl: 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1',
+  refreshInterval: 120, // 2 minutes
+  selectedFields: ['currency', 'rate', 'name', 'change', 'market_cap'],
   displayMode: 'table',
+};
+
+const initialWatchlistCard: FinanceCardWidget = {
+  id: nanoid(),
+  title: 'Stock Watchlist',
+  type: 'FINANCE_CARD',
+  params: {
+    category: 'watchlist',
+  },
+  apiUrl: 'mock://finance-card',
+  refreshInterval: 180, // 3 minutes
+  selectedFields: ['symbol', 'price', 'change', 'name'],
+  displayMode: 'card',
 };
 
 const initialGainersCard: FinanceCardWidget = {
   id: nanoid(),
-  title: 'Market Gainers',
+  title: 'Top Market Gainers',
   type: 'FINANCE_CARD',
   params: {
     category: 'gainers',
   },
-  apiUrl: 'https://api.coinbase.com/v2/exchange-rates?currency=BTC',
-  refreshInterval: 300,
-  selectedFields: ['currency', 'rate'],
+  apiUrl: 'mock://finance-card',
+  refreshInterval: 300, // 5 minutes
+  selectedFields: ['symbol', 'price', 'change', 'volume'],
+  displayMode: 'list',
+};
+
+const initialPerformanceCard: FinanceCardWidget = {
+  id: nanoid(),
+  title: 'Portfolio Performance',
+  type: 'FINANCE_CARD',
+  params: {
+    category: 'performance',
+  },
+  apiUrl: 'mock://finance-card',
+  refreshInterval: 600, // 10 minutes
+  selectedFields: ['metric', 'value', 'change'],
   displayMode: 'card',
 };
 
 export const useWidgetStore = create<WidgetState>()(
   persist(
     (set) => ({
-      widgets: [initialMsftWidget, initialAaplChart, initialCryptoTable, initialGainersCard],
+      widgets: [
+        initialAppleOverview,
+        initialMicrosoftChart,
+        initialCryptoTable,
+        initialWatchlistCard,
+        initialGainersCard,
+        initialPerformanceCard,
+      ],
       addWidget: (config) => {
         set((state) => ({
           widgets: [
