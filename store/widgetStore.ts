@@ -19,7 +19,7 @@ const initialAppleOverview: CompanyOverviewWidget = {
   params: {
     symbol: 'AAPL',
   },
-  refreshInterval: 300, // 5 minutes
+  refreshInterval: 300,
   selectedFields: ['Symbol', 'Name', 'MarketCapitalization', 'PERatio', 'EBITDA', 'Beta'],
 };
 
@@ -30,7 +30,7 @@ const initialMicrosoftChart: ChartWidget = {
   params: {
     symbol: 'MSFT',
   },
-  refreshInterval: 900, // 15 minutes
+  refreshInterval: 900,
 };
 
 const initialCryptoTable: TableWidget = {
@@ -39,7 +39,7 @@ const initialCryptoTable: TableWidget = {
   type: 'TABLE',
   params: {},
   apiUrl: 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1',
-  refreshInterval: 120, // 2 minutes
+  refreshInterval: 120,
   selectedFields: ['currency', 'rate', 'name', 'change', 'market_cap'],
   displayMode: 'table',
 };
@@ -52,7 +52,7 @@ const initialWatchlistCard: FinanceCardWidget = {
     category: 'watchlist',
   },
   apiUrl: 'mock://finance-card',
-  refreshInterval: 180, // 3 minutes
+  refreshInterval: 180,
   selectedFields: ['symbol', 'price', 'change', 'name'],
   displayMode: 'card',
 };
@@ -65,7 +65,7 @@ const initialGainersCard: FinanceCardWidget = {
     category: 'gainers',
   },
   apiUrl: 'mock://finance-card',
-  refreshInterval: 300, // 5 minutes
+  refreshInterval: 300,
   selectedFields: ['symbol', 'price', 'change', 'volume'],
   displayMode: 'list',
 };
@@ -78,7 +78,7 @@ const initialPerformanceCard: FinanceCardWidget = {
     category: 'performance',
   },
   apiUrl: 'mock://finance-card',
-  refreshInterval: 600, // 10 minutes
+  refreshInterval: 600,
   selectedFields: ['metric', 'value', 'change'],
   displayMode: 'card',
 };

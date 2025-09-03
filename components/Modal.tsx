@@ -12,7 +12,7 @@ type ModalProps = {
 export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
   if (!isOpen) return null;
   return typeof document !== 'undefined' ? createPortal(
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
       onClick={onClose}
     >

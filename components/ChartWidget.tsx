@@ -11,7 +11,6 @@ type ChartWidgetProps = {
 };
 
 export const ChartWidget = ({ config }: ChartWidgetProps) => {
-  // Use mock data with simulated loading
   const { data: chartData, error, isLoading } = useSWR(
     `mock-chart-${config.params.symbol}`,
     () => {
@@ -21,7 +20,7 @@ export const ChartWidget = ({ config }: ChartWidgetProps) => {
         }, Math.random() * 1000 + 500);
       });
     },
-    { 
+    {
       refreshInterval: config.refreshInterval * 1000,
       revalidateOnFocus: false,
     }
@@ -37,7 +36,7 @@ export const ChartWidget = ({ config }: ChartWidgetProps) => {
       </div>
     );
   }
-  
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-full">
@@ -46,7 +45,7 @@ export const ChartWidget = ({ config }: ChartWidgetProps) => {
       </div>
     );
   }
-  
+
   if (!chartData || chartData.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-gray-400">
@@ -63,7 +62,6 @@ export const ChartWidget = ({ config }: ChartWidgetProps) => {
   const priceChange = lastPrice - firstPrice;
   const priceChangePercent = firstPrice !== 0 ? ((priceChange / firstPrice) * 100) : 0;
 
-  // Calculate min and max for better chart scaling
   const prices = chartData.map(d => d.price);
   const minPrice = Math.min(...prices);
   const maxPrice = Math.max(...prices);
@@ -95,15 +93,15 @@ export const ChartWidget = ({ config }: ChartWidgetProps) => {
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
-            <XAxis 
-              dataKey="date" 
-              tick={{ fontSize: 10, fill: '#9CA3AF' }} 
+            <XAxis
+              dataKey="date"
+              tick={{ fontSize: 10, fill: '#9CA3AF' }}
               axisLine={false}
               tickLine={false}
               interval="preserveStartEnd"
             />
-            <YAxis 
-              tick={{ fontSize: 10, fill: '#9CA3AF' }} 
+            <YAxis
+              tick={{ fontSize: 10, fill: '#9CA3AF' }}
               axisLine={false}
               tickLine={false}
               domain={[minPrice - padding, maxPrice + padding]}
@@ -123,11 +121,11 @@ export const ChartWidget = ({ config }: ChartWidgetProps) => {
               ]}
               labelFormatter={(label) => `Date: ${label}`}
             />
-            <Line 
-              type="monotone" 
-              dataKey="price" 
+            <Line
+              type="monotone"
+              dataKey="price"
               stroke={priceChange >= 0 ? "#10B981" : "#EF4444"}
-              strokeWidth={2} 
+              strokeWidth={2}
               dot={false}
               activeDot={{ r: 4, fill: priceChange >= 0 ? "#10B981" : "#EF4444" }}
             />

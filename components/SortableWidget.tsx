@@ -34,8 +34,8 @@ export const SortableWidget = ({ widget, onEdit, onRemove }: SortableWidgetProps
       <Widget
         id={widget.id}
         title={widget.title}
-        onRemove={onRemove} 
-        onEdit={onEdit}    
+        onRemove={onRemove}
+        onEdit={onEdit}
       >
         <WidgetContent config={widget} />
       </Widget>

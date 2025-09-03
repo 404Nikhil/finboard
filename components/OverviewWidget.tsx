@@ -5,12 +5,12 @@ import { getNestedValue } from '@/lib/utils';
 import { MOCK_DATA, transformApiData, enhancedFetcher } from '@/lib/apiConfig';
 
 type OverviewWidgetProps = {
-    config: Extract<WidgetConfig, { type: 'COMPANY_OVERVIEW' }>;
+  config: Extract<WidgetConfig, { type: 'COMPANY_OVERVIEW' }>;
 };
 
 export const OverviewWidget = ({ config }: OverviewWidgetProps) => {
   const { selectedFields, params } = config;
-  
+
   const { data, error, isLoading } = useSWR(
     `mock-company-${params.symbol}`,
     () => {
@@ -20,12 +20,12 @@ export const OverviewWidget = ({ config }: OverviewWidgetProps) => {
         }, Math.random() * 1000 + 500);
       });
     },
-    { 
+    {
       refreshInterval: config.refreshInterval * 1000,
       revalidateOnFocus: false,
     }
   );
-  
+
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-red-400">
@@ -36,7 +36,7 @@ export const OverviewWidget = ({ config }: OverviewWidgetProps) => {
       </div>
     );
   }
-  
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-full">
@@ -45,7 +45,7 @@ export const OverviewWidget = ({ config }: OverviewWidgetProps) => {
       </div>
     );
   }
-  
+
   if (!data || Object.keys(data).length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-yellow-400">
@@ -61,11 +61,11 @@ export const OverviewWidget = ({ config }: OverviewWidgetProps) => {
     if (value === null || value === undefined || value === 'None' || value === '-') {
       return 'N/A';
     }
-    
+
     if (typeof value === 'string' && value.trim() === '') {
       return 'N/A';
     }
-    
+
     if (typeof value === 'string' && /^\d+$/.test(value)) {
       const num = parseInt(value);
       if (num > 1000000000) {
@@ -76,14 +76,14 @@ export const OverviewWidget = ({ config }: OverviewWidgetProps) => {
         return `$${(num / 1000).toFixed(1)}K`;
       }
     }
-    
+
     if (typeof value === 'string' && (value.includes('.') && !value.includes('%'))) {
       const num = parseFloat(value);
       if (!isNaN(num) && num < 100 && num > 0.001) {
         return num.toFixed(2);
       }
     }
-    
+
     return String(value);
   };
 
@@ -100,7 +100,7 @@ export const OverviewWidget = ({ config }: OverviewWidgetProps) => {
           </div>
         );
       })}
-      
+
       {data.Symbol && (
         <div className="pt-2 border-t border-gray-700">
           <div className="text-center">
@@ -109,7 +109,7 @@ export const OverviewWidget = ({ config }: OverviewWidgetProps) => {
           </div>
         </div>
       )}
-      
+
       <div className="pt-2 text-xs text-gray-500 text-center">
         Last updated: {new Date().toLocaleTimeString()}
       </div>

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { WidgetConfig } from '@/types/widget';
-import { OverviewWidget } from './OverviewWidget'; 
+import { OverviewWidget } from './OverviewWidget';
 import { ChartWidget } from './ChartWidget';
 import { TableWidget } from './TableWidget';
 import { FinanceCardWidget } from './CardWidget';

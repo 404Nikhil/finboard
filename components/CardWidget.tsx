@@ -25,7 +25,7 @@ export const FinanceCardWidget = ({ config }: FinanceCardWidgetProps) => {
 
   if (error) return <div className="text-red-500">Failed to load finance data.</div>;
   if (isLoading) return <div className="flex justify-center items-center h-full">Loading...</div>;
-  
+
   if (!rawData || !Array.isArray(rawData)) {
     return <div className="text-yellow-500">No finance data found.</div>;
   }
@@ -34,15 +34,15 @@ export const FinanceCardWidget = ({ config }: FinanceCardWidgetProps) => {
 
   const formatValue = (value: any): string => {
     if (value === null || value === undefined) return 'N/A';
-    
+
     if (typeof value === 'string' && value.includes('%')) {
       return value;
     }
-    
+
     if (typeof value === 'string' && value.includes('$')) {
       return value;
     }
-    
+
     if (typeof value === 'number') {
       if (value > 1000000) {
         return `$${(value / 1000000).toFixed(1)}M`;
@@ -103,20 +103,19 @@ export const FinanceCardWidget = ({ config }: FinanceCardWidgetProps) => {
                 {config.params.category.toUpperCase()}
               </span>
             </div>
-            
+
             <div className="space-y-2">
               {config.selectedFields.slice(0, 3).map((field, fieldIndex) => {
                 const value = getNestedValue(item, field);
                 const isChangeField = field.toLowerCase().includes('change');
-                
+
                 return (
                   <div key={field} className="flex justify-between text-sm">
                     <span className="text-gray-400 truncate capitalize">
                       {field.replace(/_/g, ' ')}:
                     </span>
-                    <span className={`font-semibold text-right ml-2 ${
-                      isChangeField ? getChangeColor(String(value)) : ''
-                    }`}>
+                    <span className={`font-semibold text-right ml-2 ${isChangeField ? getChangeColor(String(value)) : ''
+                      }`}>
                       {formatValue(value)}
                     </span>
                   </div>
@@ -137,7 +136,7 @@ export const FinanceCardWidget = ({ config }: FinanceCardWidgetProps) => {
           {config.params.category.charAt(0).toUpperCase() + config.params.category.slice(1)}
         </span>
       </div>
-      
+
       {displayData.map((item, index) => (
         <div key={index} className="flex justify-between items-center py-2 border-b border-gray-800 last:border-b-0 hover:bg-gray-800 hover:bg-opacity-50 rounded px-2 transition-colors">
           <div className="flex-1">
@@ -145,22 +144,21 @@ export const FinanceCardWidget = ({ config }: FinanceCardWidgetProps) => {
               const value = getNestedValue(item, field);
               const isMainField = fieldIndex === 0;
               const isChangeField = field.toLowerCase().includes('change');
-              
+
               return (
-                <div 
-                  key={field} 
-                  className={`${
-                    isMainField 
-                      ? 'font-semibold text-sm text-white' 
+                <div
+                  key={field}
+                  className={`${isMainField
+                      ? 'font-semibold text-sm text-white'
                       : `text-xs ${isChangeField ? getChangeColor(String(value)) : 'text-gray-400'}`
-                  }`}
+                    }`}
                 >
                   {isMainField ? formatValue(value) : `${field.replace(/_/g, ' ')}: ${formatValue(value)}`}
                 </div>
               );
             })}
           </div>
-          
+
           {config.selectedFields.length > 2 && (
             <div className="text-right">
               <div className="text-sm font-semibold text-white">
@@ -173,7 +171,7 @@ export const FinanceCardWidget = ({ config }: FinanceCardWidgetProps) => {
           )}
         </div>
       ))}
-      
+
       <div className="pt-2 text-xs text-gray-500 text-center border-t border-gray-800">
         Showing {displayData.length} items • Last updated: {new Date().toLocaleTimeString()}
       </div>

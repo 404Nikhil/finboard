@@ -82,7 +82,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-[#0D1117] to-gray-900">
       <Header onAddWidgetClick={() => handleOpenModal()} />
-      
+
       <main className="p-4 md:p-8">
         {/* Dashboard Stats */}
         <div className="mb-6">
@@ -122,7 +122,7 @@ export default function Home() {
                     </div>
                     <h3 className="text-lg font-semibold text-white mb-2">Add Widget</h3>
                     <p className="text-sm text-gray-400 mb-3">Connect to a financial API and create a custom widget</p>
-                    
+
                     <div className="flex justify-center space-x-2 opacity-60 group-hover:opacity-100 transition-opacity">
                       {/* {(['COMPANY_OVERVIEW', 'CHART', 'TABLE', 'FINANCE_CARD'] as const).map((type) => (
                         // <div key={type} className="text-xs bg-gray-700 rounded px-2 py-1 flex items-center space-x-1">
@@ -145,7 +145,7 @@ export default function Home() {
             </div>
             <h2 className="text-3xl font-bold text-white mb-4">Welcome to FinBoard</h2>
             <p className="text-gray-400 mb-8 max-w-md mx-auto">
-              Create your personalized financial dashboard by adding widgets that connect to various APIs. 
+              Create your personalized financial dashboard by adding widgets that connect to various APIs.
               Track stocks, cryptocurrencies, market data, and more in real-time.
             </p>
             <button

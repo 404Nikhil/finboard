@@ -9,7 +9,7 @@ export const fetcher = async (url: string) => {
             console.error('Indian API key is not set in .env.local');
         }
     }
-    
+
     const res = await fetch(url, { headers });
 
     if (!res.ok) {
@@ -17,6 +17,6 @@ export const fetcher = async (url: string) => {
         const message = errorData?.message || `An error occurred: ${res.statusText}`;
         throw new Error(message);
     }
-    
+
     return res.json();
 };

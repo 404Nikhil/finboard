@@ -6,9 +6,9 @@ import { getObjectKeys } from '@/lib/utils';
 import { API_ENDPOINTS, MOCK_DATA, transformApiData } from '@/lib/apiConfig';
 
 type AddWidgetFormProps = {
-    onSubmit: (config: Omit<WidgetConfig, 'id'>) => void;
-    onCancel: () => void;
-    initialData?: WidgetConfig;
+  onSubmit: (config: Omit<WidgetConfig, 'id'>) => void;
+  onCancel: () => void;
+  initialData?: WidgetConfig;
 };
 
 type WidgetType = 'COMPANY_OVERVIEW' | 'CHART' | 'TABLE' | 'FINANCE_CARD';
@@ -17,19 +17,18 @@ type DisplayMode = 'card' | 'table' | 'list';
 const getDefaultApiUrl = (type: WidgetType, symbol?: string): string => {
   switch (type) {
     case 'COMPANY_OVERVIEW':
-      return 'mock://company-overview'; // We'll use mock data
+      return 'mock://company-overview';
     case 'CHART':
-      return 'mock://chart-data'; // We'll use mock data
+      return 'mock://chart-data';
     case 'TABLE':
-      return API_ENDPOINTS.CRYPTO_LIST; // Real CoinGecko API
+      return API_ENDPOINTS.CRYPTO_LIST;
     case 'FINANCE_CARD':
-      return 'mock://finance-card'; // We'll use mock data
+      return 'mock://finance-card';
     default:
       return '';
   }
 };
 
-// Get sample fields for each widget type
 const getSampleFields = (type: WidgetType): string[] => {
   switch (type) {
     case 'COMPANY_OVERVIEW':
@@ -65,25 +64,25 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
       setWidgetType(initialData.type);
       setTitle(initialData.title);
       setRefreshInterval(initialData.refreshInterval);
-      
+
       if (initialData.type === 'COMPANY_OVERVIEW' || initialData.type === 'CHART') {
         setSymbol(initialData.params.symbol);
       }
-      
+
       if (initialData.apiUrl) {
         setUseCustomApi(true);
         setCustomApiUrl(initialData.apiUrl);
         setApiUrl(initialData.apiUrl);
       }
-      
+
       if ('selectedFields' in initialData) {
-        setSelectedFields(initialData.selectedFields);
+        setSelectedFields(initialData.selectedFields ?? []);
       }
-      
+
       if ('displayMode' in initialData) {
         setDisplayMode(initialData.displayMode);
       }
-      
+
       if (initialData.type === 'FINANCE_CARD') {
         setCategory(initialData.params.category);
       }
@@ -98,7 +97,6 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
       setApiUrl(customApiUrl);
     }
 
-    // Auto-populate fields with defaults
     if (!isEditMode) {
       const defaultFields = getSampleFields(widgetType);
       setSelectedFields(defaultFields.slice(0, 4)); // Select first 4 by default
@@ -112,7 +110,6 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
 
     try {
       if (apiUrl.startsWith('mock://')) {
-        // Handle mock data testing
         let mockData;
         switch (widgetType) {
           case 'COMPANY_OVERVIEW':
@@ -128,7 +125,7 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
             mockData = MOCK_DATA.FINANCE_CARDS[category];
             break;
         }
-        
+
         setTestData(mockData);
         if (Array.isArray(mockData)) {
           setAvailableFields(mockData.length > 0 ? Object.keys(mockData[0]) : []);
@@ -136,14 +133,13 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
           setAvailableFields(getObjectKeys(mockData));
         }
       } else {
-        // Handle real API testing
         const res = await fetch(apiUrl);
         const data = await res.json();
-        
+
         if (data.error) {
           throw new Error(data.error?.message || 'API Error');
         }
-        
+
         setTestData(data);
         if (Array.isArray(data)) {
           setAvailableFields(data.length > 0 ? Object.keys(data[0]) : []);
@@ -153,7 +149,6 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
       }
     } catch (error: any) {
       setTestError(error.message || 'Failed to fetch data. Using mock data for demo.');
-      // Still show mock data on error
       const defaultFields = getSampleFields(widgetType);
       setAvailableFields(defaultFields);
       setSelectedFields(defaultFields.slice(0, 4));
@@ -208,7 +203,7 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
             params: {},
             apiUrl: useCustomApi ? customApiUrl : apiUrl,
             selectedFields,
-            displayMode: 'table',
+            ...(widgetType === 'TABLE' && { displayMode }),
           });
         }
         break;
@@ -220,7 +215,7 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
             params: { category },
             apiUrl: useCustomApi ? customApiUrl : apiUrl,
             selectedFields,
-            displayMode,
+            ...(widgetType === 'FINANCE_CARD' && { displayMode }),
           });
         }
         break;
@@ -229,8 +224,7 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
 
   const needsSymbol = widgetType === 'COMPANY_OVERVIEW' || widgetType === 'CHART';
   const needsFields = widgetType !== 'CHART';
-  
-  // Auto-populate with default fields if none selected and fields are available
+
   useEffect(() => {
     if (needsFields && selectedFields.length === 0 && availableFields.length === 0) {
       const defaultFields = getSampleFields(widgetType);
@@ -239,8 +233,8 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
     }
   }, [widgetType, needsFields, selectedFields.length, availableFields.length]);
 
-  const isSubmitDisabled = 
-    !title.trim() || 
+  const isSubmitDisabled =
+    !title.trim() ||
     (needsSymbol && !symbol.trim()) ||
     (needsFields && selectedFields.length === 0);
 
@@ -252,38 +246,38 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
             <label className="block text-sm font-medium text-gray-300 mb-2">Widget Type</label>
             <div className="grid grid-cols-2 gap-2">
               <label className="flex items-center p-2 border border-gray-600 rounded cursor-pointer hover:bg-gray-700">
-                <input 
-                  type="radio" 
-                  name="widgetType" 
-                  value="COMPANY_OVERVIEW" 
-                  checked={widgetType === 'COMPANY_OVERVIEW'} 
-                  onChange={() => setWidgetType('COMPANY_OVERVIEW')} 
-                  className="text-green-500 focus:ring-green-500" 
-                  disabled={isEditMode} 
+                <input
+                  type="radio"
+                  name="widgetType"
+                  value="COMPANY_OVERVIEW"
+                  checked={widgetType === 'COMPANY_OVERVIEW'}
+                  onChange={() => setWidgetType('COMPANY_OVERVIEW')}
+                  className="text-green-500 focus:ring-green-500"
+                  disabled={isEditMode}
                 />
                 <span className="ml-2 text-sm">Company Overview</span>
               </label>
               <label className="flex items-center p-2 border border-gray-600 rounded cursor-pointer hover:bg-gray-700">
-                <input 
-                  type="radio" 
-                  name="widgetType" 
-                  value="CHART" 
-                  checked={widgetType === 'CHART'} 
-                  onChange={() => setWidgetType('CHART')} 
-                  className="text-green-500 focus:ring-green-500" 
-                  disabled={isEditMode} 
+                <input
+                  type="radio"
+                  name="widgetType"
+                  value="CHART"
+                  checked={widgetType === 'CHART'}
+                  onChange={() => setWidgetType('CHART')}
+                  className="text-green-500 focus:ring-green-500"
+                  disabled={isEditMode}
                 />
                 <span className="ml-2 text-sm">Chart</span>
               </label>
               <label className="flex items-center p-2 border border-gray-600 rounded cursor-pointer hover:bg-gray-700">
-                <input 
-                  type="radio" 
-                  name="widgetType" 
-                  value="TABLE" 
-                  checked={widgetType === 'TABLE'} 
-                  onChange={() => setWidgetType('TABLE')} 
-                  className="text-green-500 focus:ring-green-500" 
-                  disabled={isEditMode} 
+                <input
+                  type="radio"
+                  name="widgetType"
+                  value="TABLE"
+                  checked={widgetType === 'TABLE'}
+                  onChange={() => setWidgetType('TABLE')}
+                  className="text-green-500 focus:ring-green-500"
+                  disabled={isEditMode}
                 />
                 <span className="ml-2 text-sm">Table</span>
               </label>
@@ -306,13 +300,13 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
             <label htmlFor="widgetName" className="block text-sm font-medium text-gray-300 mb-1">
               Widget Title
             </label>
-            <input 
-              type="text" 
-              id="widgetName" 
-              value={title} 
-              onChange={(e) => setTitle(e.target.value)} 
-              required 
-              className="w-full bg-[#0D1117] border border-gray-600 rounded-md px-3 py-2 text-white" 
+            <input
+              type="text"
+              id="widgetName"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              className="w-full bg-[#0D1117] border border-gray-600 rounded-md px-3 py-2 text-white"
               placeholder={`Enter widget title (e.g., ${symbol} ${widgetType.replace('_', ' ').toLowerCase()})`}
             />
           </div>
@@ -322,14 +316,14 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
               <label htmlFor="symbol" className="block text-sm font-medium text-gray-300 mb-1">
                 Stock Symbol
               </label>
-              <input 
-                type="text" 
-                id="symbol" 
-                value={symbol} 
-                onChange={(e) => setSymbol(e.target.value.toUpperCase())} 
+              <input
+                type="text"
+                id="symbol"
+                value={symbol}
+                onChange={(e) => setSymbol(e.target.value.toUpperCase())}
                 required={needsSymbol}
-                className="w-full bg-[#0D1117] border border-gray-600 rounded-md px-3 py-2 text-white" 
-                placeholder="e.g., AAPL, MSFT, GOOGL" 
+                className="w-full bg-[#0D1117] border border-gray-600 rounded-md px-3 py-2 text-white"
+                placeholder="e.g., AAPL, MSFT, GOOGL"
               />
               <p className="text-xs text-gray-500 mt-1">Popular symbols: AAPL, MSFT, GOOGL, TSLA, AMZN</p>
             </div>
@@ -338,8 +332,8 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
           {widgetType === 'FINANCE_CARD' && (
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1">Category</label>
-              <select 
-                value={category} 
+              <select
+                value={category}
                 onChange={(e) => setCategory(e.target.value as any)}
                 className="w-full bg-[#0D1117] border border-gray-600 rounded-md px-3 py-2 text-white"
               >
@@ -350,7 +344,7 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
               </select>
             </div>
           )}
-
+          {/* 
           {(widgetType === 'FINANCE_CARD') && (
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Display Mode</label>
@@ -379,35 +373,35 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
                 </label>
               </div>
             </div>
-          )}
+          )} */}
 
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-medium text-gray-300">Data Source</label>
               <label className="flex items-center text-sm">
-                <input 
-                  type="checkbox" 
-                  checked={useCustomApi} 
+                <input
+                  type="checkbox"
+                  checked={useCustomApi}
                   onChange={(e) => setUseCustomApi(e.target.checked)}
-                  className="text-green-500 focus:ring-green-500 mr-2" 
+                  className="text-green-500 focus:ring-green-500 mr-2"
                 />
                 Use Custom API
               </label>
             </div>
-            
+
             {useCustomApi ? (
               <div className="flex space-x-2">
-                <input 
-                  type="url" 
-                  value={customApiUrl} 
-                  onChange={(e) => setCustomApiUrl(e.target.value)} 
+                <input
+                  type="url"
+                  value={customApiUrl}
+                  onChange={(e) => setCustomApiUrl(e.target.value)}
                   required={useCustomApi}
-                  className="flex-grow bg-[#0D1117] border border-gray-600 rounded-md px-3 py-2 text-white" 
-                  placeholder="https://api.example.com/data" 
+                  className="flex-grow bg-[#0D1117] border border-gray-600 rounded-md px-3 py-2 text-white"
+                  placeholder="https://api.example.com/data"
                 />
-                <button 
-                  type="button" 
-                  onClick={handleTestApi} 
+                <button
+                  type="button"
+                  onClick={handleTestApi}
                   disabled={isTesting || !customApiUrl}
                   className="px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 font-semibold disabled:bg-gray-500"
                 >
@@ -416,15 +410,15 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
               </div>
             ) : (
               <div className="flex space-x-2">
-                <input 
-                  type="text" 
-                  value={apiUrl.startsWith('mock://') ? 'Using demo data' : apiUrl} 
+                <input
+                  type="text"
+                  value={apiUrl.startsWith('mock://') ? 'Using demo data' : apiUrl}
                   readOnly
-                  className="flex-grow bg-gray-800 border border-gray-600 rounded-md px-3 py-2 text-gray-400" 
+                  className="flex-grow bg-gray-800 border border-gray-600 rounded-md px-3 py-2 text-gray-400"
                 />
-                <button 
-                  type="button" 
-                  onClick={handleTestApi} 
+                <button
+                  type="button"
+                  onClick={handleTestApi}
                   disabled={isTesting}
                   className="px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 font-semibold disabled:bg-gray-500"
                 >
@@ -432,7 +426,7 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
                 </button>
               </div>
             )}
-            
+
             {!testError && (availableFields.length > 0 || selectedFields.length > 0) && (
               <div className="mt-2 p-2 bg-green-900 border border-green-600 rounded-md flex items-center">
                 <svg className="w-4 h-4 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -475,7 +469,7 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
           <div className="mt-6">
             <h3 className="font-semibold mb-2 text-white">Select Fields to Display</h3>
             <p className="text-sm text-gray-400 mb-3">Choose which data fields to show in your widget (selected: {selectedFields.length})</p>
-            
+
             <div className="border border-gray-700 rounded-lg max-h-60 flex">
               <div className="w-1/2 border-r border-gray-700 overflow-y-auto">
                 <h4 className="p-3 font-bold bg-gray-800 sticky top-0 border-b border-gray-700 text-white">
@@ -486,20 +480,19 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
                     <p className="text-gray-500 text-sm p-2">Using preset fields for {widgetType}</p>
                   )}
                   {availableFields.map(field => (
-                    <button 
-                      key={field} 
-                      type="button" 
+                    <button
+                      key={field}
+                      type="button"
                       onClick={() => toggleField(field)}
-                      className={`block w-full text-left p-2 text-sm rounded hover:bg-gray-700 mb-1 transition-colors ${
-                        selectedFields.includes(field) ? 'bg-gray-700 text-green-400' : 'text-gray-300'
-                      }`}
+                      className={`block w-full text-left p-2 text-sm rounded hover:bg-gray-700 mb-1 transition-colors ${selectedFields.includes(field) ? 'bg-gray-700 text-green-400' : 'text-gray-300'
+                        }`}
                     >
                       {selectedFields.includes(field) ? '✓' : '+'} {field.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1')}
                     </button>
                   ))}
                 </div>
               </div>
-              
+
               <div className="w-1/2 overflow-y-auto">
                 <h4 className="p-3 font-bold bg-gray-800 sticky top-0 border-b border-gray-700 text-white">
                   Selected Fields ({selectedFields.length})
@@ -509,9 +502,9 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
                     <p className="text-gray-500 text-sm p-2">No fields selected yet. Click fields from the left to add them.</p>
                   ) : (
                     selectedFields.map((field, index) => (
-                      <button 
-                        key={field} 
-                        type="button" 
+                      <button
+                        key={field}
+                        type="button"
                         onClick={() => toggleField(field)}
                         className="block w-full text-left p-2 text-sm rounded hover:bg-gray-700 mb-1 bg-gray-700 text-white transition-colors"
                       >
@@ -523,7 +516,7 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
                 </div>
               </div>
             </div>
-            
+
             {selectedFields.length > 0 && (
               <div className="mt-2 text-xs text-gray-400">
                 💡 Tip: The first few selected fields will be prominently displayed in your widget.
@@ -531,17 +524,17 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
             )}
           </div>
         )}
-        
+
         <div className="flex justify-end space-x-4 mt-6 pt-4 border-t border-gray-700">
-          <button 
-            type="button" 
-            onClick={onCancel} 
+          <button
+            type="button"
+            onClick={onCancel}
             className="px-4 py-2 rounded-md text-gray-300 hover:bg-gray-700 transition-colors"
           >
             Cancel
           </button>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={isSubmitDisabled}
             className="px-6 py-2 rounded-md bg-green-600 hover:bg-green-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
