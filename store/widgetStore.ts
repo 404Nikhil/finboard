@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { nanoid } from 'nanoid';
 import { persist } from 'zustand/middleware';
-import { WidgetConfig, CompanyOverviewWidget, ChartWidget } from '@/types/widget';
+import { WidgetConfig, CompanyOverviewWidget, ChartWidget, TableWidget, FinanceCardWidget } from '@/types/widget';
 
 type WidgetState = {
   widgets: WidgetConfig[];
@@ -10,7 +10,6 @@ type WidgetState = {
   setWidgets: (widgets: WidgetConfig[]) => void;
   updateWidget: (id: string, newConfig: Partial<WidgetConfig>) => void;
 };
-
 
 const initialMsftWidget: CompanyOverviewWidget = {
   id: nanoid(),
@@ -33,16 +32,38 @@ const initialAaplChart: ChartWidget = {
   refreshInterval: 86400,
 };
 
+const initialCryptoTable: TableWidget = {
+  id: nanoid(),
+  title: 'Cryptocurrency Rates',
+  type: 'TABLE',
+  params: {},
+  apiUrl: 'https://api.coinbase.com/v2/exchange-rates?currency=BTC',
+  refreshInterval: 60,
+  selectedFields: ['currency', 'rate'],
+  displayMode: 'table',
+};
+
+const initialGainersCard: FinanceCardWidget = {
+  id: nanoid(),
+  title: 'Market Gainers',
+  type: 'FINANCE_CARD',
+  params: {
+    category: 'gainers',
+  },
+  apiUrl: 'https://api.coinbase.com/v2/exchange-rates?currency=BTC',
+  refreshInterval: 300,
+  selectedFields: ['currency', 'rate'],
+  displayMode: 'card',
+};
 
 export const useWidgetStore = create<WidgetState>()(
   persist(
     (set) => ({
-      widgets: [initialMsftWidget, initialAaplChart],
+      widgets: [initialMsftWidget, initialAaplChart, initialCryptoTable, initialGainersCard],
       addWidget: (config) => {
         set((state) => ({
           widgets: [
             ...state.widgets,
-            // type assertion here
             { id: nanoid(), ...config } as WidgetConfig,
           ],
         }));
@@ -57,7 +78,6 @@ export const useWidgetStore = create<WidgetState>()(
         set((state) => ({
           widgets: state.widgets.map((widget) =>
             widget.id === id
-              // type assertion here
               ? ({ ...widget, ...newConfig } as WidgetConfig)
               : widget
           ),
@@ -69,4 +89,3 @@ export const useWidgetStore = create<WidgetState>()(
     }
   )
 );
-
