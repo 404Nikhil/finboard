@@ -49,10 +49,9 @@ export const getNestedValue = (obj: any, path: string): any => {
   const dataObject = obj.data || obj;
   return path.split('.').reduce((acc, part) => acc && acc[part], dataObject);
 };
-
 export function arrayMove<T>(array: T[], from: number, to: number): T[] {
-  const newArray = array.slice();
+  const newArray = array.slice(); 
   const [removed] = newArray.splice(from, 1);
-  newArray.splice(to, 1, removed);
-  return newArray;
+  newArray.splice(to, 0, removed);
+  return newArray; 
 }

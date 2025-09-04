@@ -2,7 +2,7 @@
 import useSWR from 'swr';
 import { WidgetConfig } from '@/types/widget';
 import { getNestedValue } from '@/lib/utils';
-import { MOCK_DATA, transformApiData, enhancedFetcher } from '@/lib/apiConfig';
+import { transformApiData } from '@/lib/apiConfig';
 
 type OverviewWidgetProps = {
   config: Extract<WidgetConfig, { type: 'COMPANY_OVERVIEW' }>;
@@ -57,7 +57,7 @@ export const OverviewWidget = ({ config }: OverviewWidgetProps) => {
     );
   }
 
-  const formatValue = (value: any): string => {
+  const formatValue = (value: string | number | null | undefined): string => {
     if (value === null || value === undefined || value === 'None' || value === '-') {
       return 'N/A';
     }

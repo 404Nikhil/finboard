@@ -120,14 +120,14 @@ export const MOCK_DATA = {
 };
 
 export const transformApiData = {
-  companyOverview: (data: any, symbol: string) => {
+  companyOverview: (data: { [key: string]: string | number } | null, symbol: string) => {
     if (!data || data.error || !data.Symbol) {
       return MOCK_DATA.COMPANY_OVERVIEW[symbol as keyof typeof MOCK_DATA.COMPANY_OVERVIEW] || MOCK_DATA.COMPANY_OVERVIEW['AAPL'];
     }
     return data;
   },
 
-  chartData: (data: any, symbol: string) => {
+  chartData: (data: { chart: { result: { timestamp: number[]; indicators: { quote: { close: number[] }[] } }[] } } | null, symbol: string) => {
     if (data && data.chart && data.chart.result && data.chart.result[0]) {
       const result = data.chart.result[0];
       const timestamps = result.timestamp;
@@ -145,7 +145,7 @@ export const transformApiData = {
     return MOCK_DATA.CHART_DATA[symbol as keyof typeof MOCK_DATA.CHART_DATA] || MOCK_DATA.CHART_DATA['AAPL'];
   },
 
-  tableData: (data: any, type: 'crypto' | 'currency' = 'crypto') => {
+  tableData: (data: { symbol?: string; name: string; current_price?: number; price_change_percentage_24h?: number }[] | null, type: 'crypto' | 'currency' = 'crypto') => {
     if (type === 'crypto' && data && Array.isArray(data)) {
       return data.map(coin => ({
         currency: coin.symbol?.toUpperCase() || coin.name,
@@ -158,12 +158,12 @@ export const transformApiData = {
     return MOCK_DATA.CRYPTO_TABLE;
   },
 
-  financeCardData: (data: any, category: string) => {
+  financeCardData: (data: { [key: string]: string | number }[] | null, category: string) => {
     return MOCK_DATA.FINANCE_CARDS[category as keyof typeof MOCK_DATA.FINANCE_CARDS] || MOCK_DATA.FINANCE_CARDS.watchlist;
   },
 };
 
-export const enhancedFetcher = async (url: string): Promise<any> => {
+export const enhancedFetcher = async (url: string): Promise<Record<string, unknown>> => {
   try {
     const response = await fetch(url);
     if (!response.ok) {

@@ -32,7 +32,7 @@ export const FinanceCardWidget = ({ config }: FinanceCardWidgetProps) => {
 
   const displayData = rawData.slice(0, 5); // Show top 5 items
 
-  const formatValue = (value: any): string => {
+  const formatValue = (value: string | number | null | undefined): string => {
     if (value === null || value === undefined) return 'N/A';
 
     if (typeof value === 'string' && value.includes('%')) {
@@ -105,7 +105,7 @@ export const FinanceCardWidget = ({ config }: FinanceCardWidgetProps) => {
             </div>
 
             <div className="space-y-2">
-              {config.selectedFields.slice(0, 3).map((field, fieldIndex) => {
+              {config.selectedFields.slice(0, 3).map((field) => {
                 const value = getNestedValue(item, field);
                 const isChangeField = field.toLowerCase().includes('change');
 

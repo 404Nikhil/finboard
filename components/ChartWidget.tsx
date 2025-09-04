@@ -62,7 +62,7 @@ export const ChartWidget = ({ config }: ChartWidgetProps) => {
   }
 
   const validData = chartData.filter(d => d && typeof d.price === 'number' && !isNaN(d.price));
-  
+
   if (validData.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-gray-400">
@@ -131,8 +131,8 @@ export const ChartWidget = ({ config }: ChartWidgetProps) => {
                 fontSize: '12px',
               }}
               labelStyle={{ color: '#F9FAFB' }}
-              formatter={(value: any) => [
-                `$${parseFloat(value).toFixed(2)}`,
+              formatter={(value: number) => [
+                `$${value.toFixed(2)}`,
                 'Price'
               ]}
               labelFormatter={(label) => `Date: ${label}`}

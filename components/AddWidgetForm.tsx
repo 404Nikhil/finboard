@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { WidgetConfig } from '@/types/widget';
 import { getObjectKeys } from '@/lib/utils';
-import { API_ENDPOINTS, MOCK_DATA, transformApiData } from '@/lib/apiConfig';
+import { API_ENDPOINTS, MOCK_DATA } from '@/lib/apiConfig';
 
 type AddWidgetFormProps = {
   onSubmit: (config: Omit<WidgetConfig, 'id'>) => void;
@@ -14,7 +14,7 @@ type AddWidgetFormProps = {
 type WidgetType = 'COMPANY_OVERVIEW' | 'CHART' | 'TABLE' | 'FINANCE_CARD';
 type DisplayMode = 'card' | 'table' | 'list';
 
-const getDefaultApiUrl = (type: WidgetType, symbol?: string): string => {
+const getDefaultApiUrl = (type: WidgetType): string => {
   switch (type) {
     case 'COMPANY_OVERVIEW':
       return 'mock://company-overview';
@@ -55,7 +55,6 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
   const [refreshInterval, setRefreshInterval] = useState(30);
   const [selectedFields, setSelectedFields] = useState<string[]>([]);
   const [isTesting, setIsTesting] = useState(false);
-  const [testData, setTestData] = useState<any>(null);
   const [availableFields, setAvailableFields] = useState<string[]>([]);
   const [testError, setTestError] = useState('');
 
@@ -91,7 +90,7 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
 
   useEffect(() => {
     if (!useCustomApi) {
-      const defaultUrl = getDefaultApiUrl(widgetType, symbol);
+      const defaultUrl = getDefaultApiUrl(widgetType);
       setApiUrl(defaultUrl);
     } else {
       setApiUrl(customApiUrl);
@@ -101,12 +100,11 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
       const defaultFields = getSampleFields(widgetType);
       setSelectedFields(defaultFields.slice(0, 4)); // Select first 4 by default
     }
-  }, [widgetType, symbol, useCustomApi, customApiUrl, isEditMode]);
+  }, [widgetType, useCustomApi, customApiUrl, isEditMode]);
 
   const handleTestApi = async () => {
     setIsTesting(true);
     setTestError('');
-    setTestData(null);
 
     try {
       if (apiUrl.startsWith('mock://')) {
@@ -126,7 +124,6 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
             break;
         }
 
-        setTestData(mockData);
         if (Array.isArray(mockData)) {
           setAvailableFields(mockData.length > 0 ? Object.keys(mockData[0]) : []);
         } else {
@@ -140,15 +137,14 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
           throw new Error(data.error?.message || 'API Error');
         }
 
-        setTestData(data);
         if (Array.isArray(data)) {
           setAvailableFields(data.length > 0 ? Object.keys(data[0]) : []);
         } else {
           setAvailableFields(getObjectKeys(data));
         }
       }
-    } catch (error: any) {
-      setTestError(error.message || 'Failed to fetch data. Using mock data for demo.');
+    } catch (error) {
+      setTestError((error as Error).message || 'Failed to fetch data. Using mock data for demo.');
       const defaultFields = getSampleFields(widgetType);
       setAvailableFields(defaultFields);
       setSelectedFields(defaultFields.slice(0, 4));
@@ -282,14 +278,14 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
                 <span className="ml-2 text-sm">Table</span>
               </label>
               {/* <label className="flex items-center p-2 border border-gray-600 rounded cursor-pointer hover:bg-gray-700">
-                <input 
-                  type="radio" 
-                  name="widgetType" 
-                  value="FINANCE_CARD" 
-                  checked={widgetType === 'FINANCE_CARD'} 
-                  onChange={() => setWidgetType('FINANCE_CARD')} 
-                  className="text-green-500 focus:ring-green-500" 
-                  disabled={isEditMode} 
+                <input
+                  type="radio"
+                  name="widgetType"
+                  value="FINANCE_CARD"
+                  checked={widgetType === 'FINANCE_CARD'}
+                  onChange={() => setWidgetType('FINANCE_CARD')}
+                  className="text-green-500 focus:ring-green-500"
+                  disabled={isEditMode}
                 />
                 <span className="ml-2 text-sm">Finance Card</span>
               </label> */}
@@ -334,7 +330,7 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
               <label className="block text-sm font-medium text-gray-300 mb-1">Category</label>
               <select
                 value={category}
-                onChange={(e) => setCategory(e.target.value as any)}
+                onChange={(e) => setCategory(e.target.value as 'watchlist' | 'gainers' | 'performance' | 'financial')}
                 className="w-full bg-[#0D1117] border border-gray-600 rounded-md px-3 py-2 text-white"
               >
                 <option value="watchlist">Watchlist - Track your favorite stocks</option>
@@ -344,30 +340,30 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
               </select>
             </div>
           )}
-          {/* 
+          {/*
           {(widgetType === 'FINANCE_CARD') && (
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Display Mode</label>
               <div className="flex space-x-4">
                 <label className="flex items-center">
-                  <input 
-                    type="radio" 
-                    name="displayMode" 
-                    value="card" 
-                    checked={displayMode === 'card'} 
-                    onChange={() => setDisplayMode('card')} 
-                    className="text-green-500 focus:ring-green-500" 
+                  <input
+                    type="radio"
+                    name="displayMode"
+                    value="card"
+                    checked={displayMode === 'card'}
+                    onChange={() => setDisplayMode('card')}
+                    className="text-green-500 focus:ring-green-500"
                   />
                   <span className="ml-2">Card View</span>
                 </label>
                 <label className="flex items-center">
-                  <input 
-                    type="radio" 
-                    name="displayMode" 
-                    value="list" 
-                    checked={displayMode === 'list'} 
-                    onChange={() => setDisplayMode('list')} 
-                    className="text-green-500 focus:ring-green-500" 
+                  <input
+                    type="radio"
+                    name="displayMode"
+                    value="list"
+                    checked={displayMode === 'list'}
+                    onChange={() => setDisplayMode('list')}
+                    className="text-green-500 focus:ring-green-500"
                   />
                   <span className="ml-2">List View</span>
                 </label>
@@ -461,7 +457,7 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
         {testError && (
           <div className="mt-4 p-3 bg-yellow-900 border border-yellow-600 rounded-md">
             <p className="text-yellow-300 text-sm">{testError}</p>
-            <p className="text-yellow-200 text-xs mt-1">Don't worry! Demo data will be used to show how the widget works.</p>
+            <p className="text-yellow-200 text-xs mt-1">Don&apos;t worry! Demo data will be used to show how the widget works.</p>
           </div>
         )}
 
@@ -544,4 +540,4 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
       </form>
     </div>
   );
-}; 
+};

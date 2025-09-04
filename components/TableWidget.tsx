@@ -14,11 +14,10 @@ const fetcher = async (url: string) => {
       return await response.json();
     }
     throw new Error('Using mock data');
-  } catch (error) {
+  } catch {
     return null;
   }
 };
-
 type TableWidgetProps = {
   config: Extract<WidgetConfig, { type: 'TABLE' }>;
 };
@@ -34,7 +33,7 @@ export const TableWidget = ({ config }: TableWidgetProps) => {
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
   const itemsPerPage = 10;
 
-  const { data: rawData, error, isLoading } = useSWR(
+  const { data: rawData, isLoading } = useSWR(
     config.apiUrl?.includes('coingecko') ? API_ENDPOINTS.CRYPTO_LIST : 'mock-table-data',
     config.apiUrl?.includes('coingecko') ? fetcher : () => {
       return new Promise(resolve => {
@@ -43,18 +42,18 @@ export const TableWidget = ({ config }: TableWidgetProps) => {
         }, Math.random() * 1000 + 500);
       });
     },
-    { 
+    {
       refreshInterval: config.refreshInterval * 1000,
       revalidateOnFocus: false,
-      dedupingInterval: 60, 
+      dedupingInterval: 60,
     }
   );
 
   const tableData = useMemo(() => {
     if (!rawData) return [];
-
-    let data: any[] = [];
-
+  
+    let data: Record<string, unknown>[] = [];
+  
     try {
       if (Array.isArray(rawData)) {
         if (rawData.length > 0 && rawData[0]?.current_price !== undefined) {
@@ -63,8 +62,8 @@ export const TableWidget = ({ config }: TableWidgetProps) => {
             currency: coin.symbol?.toUpperCase() || coin.id || 'N/A',
             rate: coin.current_price ? parseFloat(coin.current_price).toFixed(6) : '0.000000',
             name: coin.name || 'Unknown',
-            change: coin.price_change_percentage_24h 
-              ? `${coin.price_change_percentage_24h >= 0 ? '+' : ''}${parseFloat(coin.price_change_percentage_24h).toFixed(2)}%` 
+            change: coin.price_change_percentage_24h
+              ? `${coin.price_change_percentage_24h >= 0 ? '+' : ''}${parseFloat(coin.price_change_percentage_24h).toFixed(2)}%`
               : '0.00%',
             market_cap: coin.market_cap ? `$${(coin.market_cap / 1000000).toFixed(0)}M` : 'N/A',
           }));
@@ -76,11 +75,11 @@ export const TableWidget = ({ config }: TableWidgetProps) => {
       } else {
         data = transformApiData.tableData(null, 'currency');
       }
-    } catch (error) {
-      console.warn('Error processing table data, using fallback:', error);
+    } catch {
+      console.warn('Error processing table data, using fallback.');
       data = transformApiData.tableData(null, 'currency');
     }
-
+  
     return data;
   }, [rawData]);
 
@@ -96,14 +95,14 @@ export const TableWidget = ({ config }: TableWidgetProps) => {
 
       const aNum = parseFloat(String(aValue).replace(/[^\d.-]/g, ''));
       const bNum = parseFloat(String(bValue).replace(/[^\d.-]/g, ''));
-      
+
       if (!isNaN(aNum) && !isNaN(bNum)) {
         return sortConfig.direction === 'asc' ? aNum - bNum : bNum - aNum;
       }
 
       const aStr = String(aValue).toLowerCase();
       const bStr = String(bValue).toLowerCase();
-      
+
       if (aStr < bStr) return sortConfig.direction === 'asc' ? -1 : 1;
       if (aStr > bStr) return sortConfig.direction === 'asc' ? 1 : -1;
       return 0;
@@ -171,7 +170,7 @@ export const TableWidget = ({ config }: TableWidgetProps) => {
         </svg>
       );
     }
-    
+
     return sortConfig.direction === 'asc' ? (
       <svg className="w-3 h-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
@@ -183,7 +182,7 @@ export const TableWidget = ({ config }: TableWidgetProps) => {
     );
   };
 
-  const formatValue = (value: any): string => {
+  const formatValue = (value: string | number | null | undefined): string => {
     if (value === null || value === undefined) return 'N/A';
 
     if (typeof value === 'string' && value.includes('%')) {
@@ -217,15 +216,6 @@ export const TableWidget = ({ config }: TableWidgetProps) => {
 
     return String(value);
   };
-
-  if (error) return (
-    <div className="text-red-500 p-4 text-center">
-      <svg className="w-8 h-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
-        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-      </svg>
-      Failed to load table data. Using demo data.
-    </div>
-  );
 
   if (isLoading) return (
     <div className="flex justify-center items-center h-full">
@@ -292,7 +282,7 @@ export const TableWidget = ({ config }: TableWidgetProps) => {
             <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
             </svg>
-            No results found for "{searchTerm}"
+            No results found for &quot;{searchTerm}&quot;
           </div>
         )}
       </div>
@@ -302,8 +292,8 @@ export const TableWidget = ({ config }: TableWidgetProps) => {
           <thead className="sticky top-0 bg-gray-800 z-10">
             <tr>
               {headers.map((header) => (
-                <th 
-                  key={header} 
+                <th
+                  key={header}
                   className="text-left p-2 border-b border-gray-700 text-xs font-medium text-gray-300 cursor-pointer hover:bg-gray-700 select-none"
                   onClick={() => handleSort(header)}
                 >
