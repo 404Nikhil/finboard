@@ -63,11 +63,10 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-[#0D1117] to-gray-900">
       <Header onAddWidgetClick={() => handleOpenModal()} />
 
-      <main className="p-4 md:p-8">
+      <main className="p-4 md:p-8 ">
         <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-center mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-white mb-1">Finance Dashboard</h1>
               <p className="text-gray-400 text-sm">
                 {widgets.length} active widget{widgets.length !== 1 ? 's' : ''} • Real-time data
               </p>
@@ -93,7 +92,7 @@ export default function Home() {
 
                 <div
                   onClick={() => handleOpenModal()}
-                  className="group bg-white/5 dark:bg-[#161B22] border-2 border-dashed border-gray-600 hover:border-green-500 rounded-lg p-6 min-h-[200px] cursor-pointer hover:bg-white/10 dark:hover:bg-[#1C2128] transition-all duration-300 flex items-center justify-center"
+                  className="group bg-white/5 dark:bg-[#161B22] border-2 border-dashed border-gray-600 hover:border-blue-500 rounded-lg p-6 min-h-[200px] cursor-pointer hover:bg-white/10 dark:hover:bg-[#1C2128] transition-all duration-300 flex items-center justify-center"
                 >
                   <div className="text-center">
                     <div className="mx-auto w-16 h-16 flex items-center justify-center bg-gradient-to-br from-green-600 to-blue-600 rounded-full text-white text-2xl font-bold mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
@@ -116,12 +115,12 @@ export default function Home() {
               Create your personalized financial dashboard by adding widgets that connect to various APIs.
               Track stocks, cryptocurrencies, market data, and more in real-time.
             </p>
-            <button
+            {/* <button
               onClick={() => handleOpenModal()}
               className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
               Create Your First Widget
-            </button>
+            </button> */}
           </div>
         )}
       </main>

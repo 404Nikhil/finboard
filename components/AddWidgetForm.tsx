@@ -515,7 +515,6 @@ export const AddWidgetForm = ({ onSubmit, onCancel, initialData }: AddWidgetForm
 
             {selectedFields.length > 0 && (
               <div className="mt-2 text-xs text-gray-400">
-                💡 Tip: The first few selected fields will be prominently displayed in your widget.
               </div>
             )}
           </div>
