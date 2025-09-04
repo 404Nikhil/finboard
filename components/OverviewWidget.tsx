@@ -11,7 +11,7 @@ type OverviewWidgetProps = {
 export const OverviewWidget = ({ config }: OverviewWidgetProps) => {
   const { selectedFields, params } = config;
 
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading } = useSWR<{ Symbol?: string; Name?: string }>(
     `mock-company-${params.symbol}`,
     () => {
       return new Promise(resolve => {

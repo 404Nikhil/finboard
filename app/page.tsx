@@ -7,7 +7,7 @@ import { Modal } from '@/components/Modal';
 import { AddWidgetForm } from '@/components/AddWidgetForm';
 import { WidgetConfig } from '@/types/widget';
 import { ClientOnly } from '@/components/ClientOnly';
-import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
+import { DndContext, closestCenter, DragEndEvent, useSensor, useSensors, PointerSensor, KeyboardSensor } from '@dnd-kit/core';
 import { arrayMove, SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
 import { SortableWidget } from '@/components/SortableWidget';
 
@@ -15,6 +15,16 @@ export default function Home() {
   const { widgets, addWidget, removeWidget, setWidgets, updateWidget } = useWidgetStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingWidgetId, setEditingWidgetId] = useState<string | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 10,
+        delay: 150,
+      },
+    }),
+    useSensor(KeyboardSensor)
+  );
 
   const handleOpenModal = (widgetId?: string) => {
     setEditingWidgetId(widgetId || null);
@@ -49,42 +59,11 @@ export default function Home() {
     }
   };
 
-  // const getWidgetTypeIcon = (type: WidgetConfig['type']) => {
-  //   switch (type) {
-  //     case 'COMPANY_OVERVIEW':
-  //       return '';
-  //     case 'CHART':
-  //       return '';
-  //     case 'TABLE':
-  //       return '';
-  //     case 'FINANCE_CARD':
-  //       return '';
-  //     default:
-  //       return '';
-  //   }
-  // };
-
-  const getWidgetTypeLabel = (type: WidgetConfig['type']) => {
-    switch (type) {
-      case 'COMPANY_OVERVIEW':
-        return 'Company Overview';
-      case 'CHART':
-        return 'Stock Chart';
-      case 'TABLE':
-        return 'Data Table';
-      case 'FINANCE_CARD':
-        return 'Finance Card';
-      default:
-        return 'Unknown Widget';
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-[#0D1117] to-gray-900">
       <Header onAddWidgetClick={() => handleOpenModal()} />
 
       <main className="p-4 md:p-8">
-        {/* Dashboard Stats */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -98,6 +77,7 @@ export default function Home() {
 
         <ClientOnly>
           <DndContext
+            sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
           >
@@ -107,7 +87,6 @@ export default function Home() {
                   <SortableWidget
                     key={widget.id}
                     widget={widget}
-                    onEdit={handleOpenModal}
                     onRemove={removeWidget}
                   />
                 ))}
@@ -122,15 +101,6 @@ export default function Home() {
                     </div>
                     <h3 className="text-lg font-semibold text-white mb-2">Add Widget</h3>
                     <p className="text-sm text-gray-400 mb-3">Connect to a financial API and create a custom widget</p>
-
-                    <div className="flex justify-center space-x-2 opacity-60 group-hover:opacity-100 transition-opacity">
-                      {/* {(['COMPANY_OVERVIEW', 'CHART', 'TABLE', 'FINANCE_CARD'] as const).map((type) => (
-                        // <div key={type} className="text-xs bg-gray-700 rounded px-2 py-1 flex items-center space-x-1">
-                        //   <span>{getWidgetTypeIcon(type)}</span>
-                        //   <span className="hidden sm:inline">{getWidgetTypeLabel(type).split(' ')[0]}</span>
-                        // </div>
-                      ))} */}
-                    </div>
                   </div>
                 </div>
               </div>
@@ -140,9 +110,7 @@ export default function Home() {
 
         {widgets.length === 0 && (
           <div className="text-center py-20">
-            <div className="mb-8">
-
-            </div>
+            <div className="mb-8"></div>
             <h2 className="text-3xl font-bold text-white mb-4">Welcome to FinBoard</h2>
             <p className="text-gray-400 mb-8 max-w-md mx-auto">
               Create your personalized financial dashboard by adding widgets that connect to various APIs.

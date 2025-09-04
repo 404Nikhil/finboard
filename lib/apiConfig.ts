@@ -6,6 +6,28 @@ export const API_ENDPOINTS = {
   MARKET_DATA: 'https://api.coingecko.com/api/v3/global',
 };
 
+function generateMockChartData(basePrice: number, days: number) {
+  const data = [];
+  let currentPrice = basePrice;
+  const today = new Date();
+
+  for (let i = days; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
+
+    const change = (Math.random() - 0.5) * (basePrice * 0.05); // 5% max daily change
+    currentPrice = Math.max(currentPrice + change, basePrice * 0.5); // Don't go below 50% of base
+
+    data.push({
+      date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      price: Number(currentPrice.toFixed(2)),
+      fullDate: date.toISOString().split('T')[0],
+    });
+  }
+
+  return data;
+}
+
 export const MOCK_DATA = {
   COMPANY_OVERVIEW: {
     'AAPL': {
@@ -96,28 +118,6 @@ export const MOCK_DATA = {
     ],
   },
 };
-
-function generateMockChartData(basePrice: number, days: number) {
-  const data = [];
-  let currentPrice = basePrice;
-  const today = new Date();
-
-  for (let i = days; i >= 0; i--) {
-    const date = new Date(today);
-    date.setDate(date.getDate() - i);
-
-    const change = (Math.random() - 0.5) * (basePrice * 0.05); // 5% max daily change
-    currentPrice = Math.max(currentPrice + change, basePrice * 0.5); // Don't go below 50% of base
-
-    data.push({
-      date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      price: Number(currentPrice.toFixed(2)),
-      fullDate: date.toISOString().split('T')[0],
-    });
-  }
-
-  return data;
-}
 
 export const transformApiData = {
   companyOverview: (data: any, symbol: string) => {

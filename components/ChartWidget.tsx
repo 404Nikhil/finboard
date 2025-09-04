@@ -16,7 +16,9 @@ export const ChartWidget = ({ config }: ChartWidgetProps) => {
     () => {
       return new Promise(resolve => {
         setTimeout(() => {
-          resolve(transformApiData.chartData(null, config.params.symbol));
+          const data = transformApiData.chartData(null, config.params.symbol);
+          console.log('Chart data for', config.params.symbol, ':', data); // Debug log
+          resolve(data);
         }, Math.random() * 1000 + 500);
       });
     },
@@ -46,26 +48,41 @@ export const ChartWidget = ({ config }: ChartWidgetProps) => {
     );
   }
 
-  if (!chartData || chartData.length === 0) {
+  if (!chartData || !Array.isArray(chartData) || chartData.length === 0) {
+    console.warn('Invalid chart data:', chartData); // Debug log
     return (
       <div className="flex flex-col items-center justify-center h-full text-gray-400">
         <svg className="w-8 h-8 mb-2" fill="currentColor" viewBox="0 0 20 20">
           <path fillRule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 01.293.707v6.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L6 13.586V7.414L3.707 5.121A1 1 0 013 4z" clipRule="evenodd" />
         </svg>
         <div className="text-sm">No chart data to display</div>
+        <div className="text-xs text-gray-500 mt-1">Symbol: {config.params.symbol}</div>
       </div>
     );
   }
 
-  const firstPrice = chartData[0]?.price || 0;
-  const lastPrice = chartData[chartData.length - 1]?.price || 0;
+  const validData = chartData.filter(d => d && typeof d.price === 'number' && !isNaN(d.price));
+  
+  if (validData.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full text-gray-400">
+        <svg className="w-8 h-8 mb-2" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 01.293.707v6.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L6 13.586V7.414L3.707 5.121A1 1 0 013 4z" clipRule="evenodd" />
+        </svg>
+        <div className="text-sm">Invalid price data</div>
+      </div>
+    );
+  }
+
+  const firstPrice = validData[0]?.price || 0;
+  const lastPrice = validData[validData.length - 1]?.price || 0;
   const priceChange = lastPrice - firstPrice;
   const priceChangePercent = firstPrice !== 0 ? ((priceChange / firstPrice) * 100) : 0;
 
-  const prices = chartData.map(d => d.price);
+  const prices = validData.map(d => d.price);
   const minPrice = Math.min(...prices);
   const maxPrice = Math.max(...prices);
-  const padding = (maxPrice - minPrice) * 0.1;
+  const padding = (maxPrice - minPrice) * 0.1 || 1; // Prevent zero padding
 
   return (
     <div className="h-full flex flex-col">
@@ -79,7 +96,6 @@ export const ChartWidget = ({ config }: ChartWidgetProps) => {
         </div>
       </div>
 
-      {/* Price Display */}
       <div className="mb-3 text-center">
         <div className="text-xl font-bold text-white">
           ${lastPrice.toFixed(2)}
@@ -91,7 +107,7 @@ export const ChartWidget = ({ config }: ChartWidgetProps) => {
 
       <div className="flex-1" style={{ minHeight: '150px' }}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+          <LineChart data={validData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
             <XAxis
               dataKey="date"
@@ -135,7 +151,7 @@ export const ChartWidget = ({ config }: ChartWidgetProps) => {
 
       <div className="mt-2 flex justify-between text-xs text-gray-400">
         <span>Range: ${minPrice.toFixed(2)} - ${maxPrice.toFixed(2)}</span>
-        <span>{chartData.length} data points</span>
+        <span>{validData.length} data points</span>
       </div>
     </div>
   );

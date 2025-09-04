@@ -6,15 +6,13 @@ import { CSS } from '@dnd-kit/utilities';
 import { WidgetConfig } from '@/types/widget';
 import { Widget } from './Widget';
 import { WidgetContent } from './WidgetContent';
-import { useWidgetStore } from '@/store/widgetStore';
 
 type SortableWidgetProps = {
   widget: WidgetConfig;
-  onEdit: (id: string) => void;
   onRemove: (id: string) => void;
 };
 
-export const SortableWidget = ({ widget, onEdit, onRemove }: SortableWidgetProps) => {
+export const SortableWidget = ({ widget, onRemove }: SortableWidgetProps) => {
   const {
     attributes,
     listeners,
@@ -35,7 +33,6 @@ export const SortableWidget = ({ widget, onEdit, onRemove }: SortableWidgetProps
         id={widget.id}
         title={widget.title}
         onRemove={onRemove}
-        onEdit={onEdit}
       >
         <WidgetContent config={widget} />
       </Widget>
