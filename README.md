@@ -4,7 +4,7 @@
 
 FinBoard is a customizable financial dashboard that allows you to create a personalized overview of the financial markets. Track stocks, cryptocurrencies, and other financial data in real-time with a variety of widgets that can be arranged to suit your needs.
 
-**Deployed Link:** [\[Link to Finboard\]](https://finboard-green.vercel.app/)
+**Deployed Link:** [Finboard](https://finboard-green.vercel.app/)
 
 ## Project Structure and File Documentation
 
