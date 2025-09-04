@@ -4,40 +4,7 @@
 
 FinBoard is a customizable financial dashboard that allows you to create a personalized overview of the financial markets. Track stocks, cryptocurrencies, and other financial data in real-time with a variety of widgets that can be arranged to suit your needs.
 
-**Deployed Link:** [\[\]](https://finboard-green.vercel.app/)
-
-## 🏁 Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](https://www.google.com/search?q=http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://www.google.com/search?q=%5Bhttps://nextjs.org/docs/app/building-your-application/optimizing/fonts%5D\(https://nextjs.org/docs/app/building-your-application/optimizing/fonts\)) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## 🛠️ Technologies Used
-
-  * **Next.js**: React framework for server-side rendering and static site generation.
-  * **React**: A JavaScript library for building user interfaces.
-  * **TypeScript**: A typed superset of JavaScript.
-  * **Tailwind CSS**: A utility-first CSS framework.
-  * **Zustand**: A small, fast, and scalable state-management solution.
-  * **SWR**: A React Hooks library for data fetching.
-  * **dnd-kit**: A modern, lightweight, drag-and-drop toolkit for React.
-  * **Recharts**: A composable charting library for React.
-  * **ESLint**: A pluggable and configurable linter tool.
-  * **Prettier**: An opinionated code formatter.
+**Deployed Link:** [\[\Finboard]](https://finboard-green.vercel.app/)
 
 ## 📂 Project Structure and File Documentation
 
@@ -190,8 +157,16 @@ The `TableWidget` component includes several algorithms for data manipulation:
 
 -----
 
-## 🚀 Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🛠️ Technologies Used
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+  * **Next.js**: React framework for server-side rendering and static site generation.
+  * **React**: A JavaScript library for building user interfaces.
+  * **TypeScript**: A typed superset of JavaScript.
+  * **Tailwind CSS**: A utility-first CSS framework.
+  * **Zustand**: A small, fast, and scalable state-management solution.
+  * **SWR**: A React Hooks library for data fetching.
+  * **dnd-kit**: A modern, lightweight, drag-and-drop toolkit for React.
+  * **Recharts**: A composable charting library for React.
+  * **ESLint**: A pluggable and configurable linter tool.
+  * **Prettier**: An opinionated code formatter.
