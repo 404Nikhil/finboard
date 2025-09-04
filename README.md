@@ -1,5 +1,3 @@
-# FinBoard Documentation
-
 ## Project Overview
 
 FinBoard is a customizable financial dashboard that allows you to create a personalized overview of the financial markets. Track stocks, cryptocurrencies, and other financial data in real-time with a variety of widgets that can be arranged to suit your needs.
@@ -157,7 +155,7 @@ The `TableWidget` component includes several algorithms for data manipulation:
 
 -----
 
-## 🛠️ Technologies Used
+##  Technologies Used
 
   * **Next.js**: React framework for server-side rendering and static site generation.
   * **React**: A JavaScript library for building user interfaces.
