@@ -116,7 +116,7 @@ export const FinanceCardWidget = ({ config }: FinanceCardWidgetProps) => {
                     </span>
                     <span className={`font-semibold text-right ml-2 ${isChangeField ? getChangeColor(String(value)) : ''
                       }`}>
-                      {formatValue(value)}
+                      {formatValue(value as string | number | null | undefined)}
                     </span>
                   </div>
                 );
@@ -153,7 +153,7 @@ export const FinanceCardWidget = ({ config }: FinanceCardWidgetProps) => {
                       : `text-xs ${isChangeField ? getChangeColor(String(value)) : 'text-gray-400'}`
                     }`}
                 >
-                  {isMainField ? formatValue(value) : `${field.replace(/_/g, ' ')}: ${formatValue(value)}`}
+                  {isMainField ? formatValue(value as string | number | null | undefined) : `${field.replace(/_/g, ' ')}: ${formatValue(value as string | number | null | undefined)}`}
                 </div>
               );
             })}
@@ -162,7 +162,7 @@ export const FinanceCardWidget = ({ config }: FinanceCardWidgetProps) => {
           {config.selectedFields.length > 2 && (
             <div className="text-right">
               <div className="text-sm font-semibold text-white">
-                {formatValue(getNestedValue(item, config.selectedFields[2]))}
+                {formatValue(getNestedValue(item, config.selectedFields[2]) as string | number | null | undefined)}
               </div>
               <div className="text-xs text-gray-400 capitalize">
                 {config.selectedFields[2].replace(/_/g, ' ')}

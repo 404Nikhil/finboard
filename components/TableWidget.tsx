@@ -318,7 +318,7 @@ export const TableWidget = ({ config }: TableWidgetProps) => {
                     <td key={header} className={`p-2 ${
                       isChange ? (isPositive ? 'text-green-400' : isNegative ? 'text-red-400' : '') : ''
                     }`}>
-                      {formatValue(value)}
+                      {formatValue(value as string | number | null | undefined)}
                     </td>
                   );
                 })}

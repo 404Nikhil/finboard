@@ -95,7 +95,7 @@ export const OverviewWidget = ({ config }: OverviewWidgetProps) => {
           <div key={field} className="flex justify-between items-center border-b border-gray-800 pb-2">
             <span className="text-gray-400 text-xs font-medium">{field.replace(/([A-Z])/g, ' $1').trim()}</span>
             <span className="font-semibold text-right ml-3 text-sm">
-              {formatValue(value)}
+              {formatValue(value as string | number | null | undefined)}
             </span>
           </div>
         );
