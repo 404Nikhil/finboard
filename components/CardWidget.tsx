@@ -149,8 +149,8 @@ export const FinanceCardWidget = ({ config }: FinanceCardWidgetProps) => {
                 <div
                   key={field}
                   className={`${isMainField
-                      ? 'font-semibold text-sm text-white'
-                      : `text-xs ${isChangeField ? getChangeColor(String(value)) : 'text-gray-400'}`
+                    ? 'font-semibold text-sm text-white'
+                    : `text-xs ${isChangeField ? getChangeColor(String(value)) : 'text-gray-400'}`
                     }`}
                 >
                   {isMainField ? formatValue(value as string | number | null | undefined) : `${field.replace(/_/g, ' ')}: ${formatValue(value as string | number | null | undefined)}`}
